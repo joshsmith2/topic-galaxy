@@ -1,4 +1,27 @@
 import csv
+import re
+import itertools
+
+def get_term_edges(terms, data, termfield='Term', data_textfield='Text'):
+    """
+    Given terms to look for in a dataset, return an edges table describing
+    connections between those terms
+
+    :param terms: dict: Terms to look for in Dataset
+    :param data: list: Source data
+    :return: dict: Gephi edge table formatted connections
+    """
+    terms_text = [term[termfield].lower() for term in terms]
+    edges = []
+    for document in data:
+        text_to_search = document[data_textfield].lower()
+        found_terms = [t for t in terms_text if t in text_to_search]
+        pairs = list(itertools.combinations(found_terms, 2))
+        edges.extend([{'source': p[0], 'target':p[1]} for p in pairs])
+    return edges
+
+def get_user_edges(terms, data):
+    pass
 
 def get_data_from_csv(csv_path):
     """
